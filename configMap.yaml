@@ -1,10 +1,12 @@
+#experimental only .. using /app/config folder configured in desktop-deployment.yaml
+########################################################################################
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: clone-props
   namespace: default
 data:
-  props.version: 1.0.0       # 1
+  props.version: master       # 1
   props.env: dev              # 2
 ---
 spec:

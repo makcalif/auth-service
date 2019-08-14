@@ -17,24 +17,24 @@ spec:
           image: auth-service:latest
           imagePullPolicy: IfNotPresent
           envFrom:
-          - configMapRef:
-              name: clone-props
-#          volumeMounts:
-#            - name: config
-#              mountPath: /config
+#          - configMapRef:
+#              name: clone-props
+          volumeMounts:
+            - name: config
+              mountPath: /app/config
           ports:
             - containerPort: 8011
       initContainers:
         - name: git-clone
           image: alpine/git:1.0.4
           command: ['/bin/sh', '-c']
-          args: ['git clone --branch 1.0.0 https://github.com/makcalif/config-properties.git && mv config-properties/auth-service/dev/* /config'] # 3
+          args: ['git clone --branch master https://github.com/makcalif/config-properties.git && mv config-properties/auth-service/dev/* /app/config'] # 3
           volumeMounts:
             - name: config
-              mountPath: /config
-          envFrom:
-            - configMapRef:
-                name: clone-props
+              mountPath: /app/config
+#          envFrom:
+#            - configMapRef:
+#                name: clone-props
       volumes:
         - name: config
           emptyDir: {}
