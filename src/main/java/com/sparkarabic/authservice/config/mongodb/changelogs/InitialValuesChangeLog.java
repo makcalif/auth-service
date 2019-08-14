@@ -16,7 +16,7 @@ import java.util.Set;
 @ChangeLog
 public class InitialValuesChangeLog {
 
-    @ChangeSet(order = "001", id = "insertBrowserClientDetails", author = "Marcus Hert Da Corégio")
+    @ChangeSet(order = "001", id = "insertBrowserClientDetails", author = "Mumtaz Khan")
     public void insertBrowserClientDetails(MongoTemplate mongoTemplate) {
         AuthClientDetails browserClientDetails = new AuthClientDetails();
         browserClientDetails.setClientId("browser");
@@ -27,7 +27,7 @@ public class InitialValuesChangeLog {
         mongoTemplate.save(browserClientDetails);
     }
 
-    @ChangeSet(order = "002", id = "insertUserToTestAuthentication", author = "Marcus Hert Da Corégio")
+    @ChangeSet(order = "002", id = "insertUserToTestAuthentication", author = "Mumtaz Khan")
     public void insertUserToTestAuthentication(MongoTemplate mongoTemplate) {
         Set<Authorities> authorities = new HashSet<>();
         authorities.add(Authorities.ROLE_USER);
@@ -41,7 +41,7 @@ public class InitialValuesChangeLog {
         mongoTemplate.save(user);
     }
 
-    @ChangeSet(order = "003", id = "insertAccountServiceClientDetails", author = "Marcus Hert Da Corégio")
+    @ChangeSet(order = "003", id = "insertAccountServiceClientDetails", author = "Mumtaz Khan")
     public void insertAccountServiceClientDetails(MongoTemplate mongoTemplate) {
         AuthClientDetails accountServiceClientDetails = new AuthClientDetails();
         accountServiceClientDetails.setClientId("account-service");
