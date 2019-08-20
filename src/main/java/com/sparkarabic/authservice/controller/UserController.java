@@ -46,4 +46,10 @@ public class UserController {
         return user;
     }
 
+    @PostMapping ("/dummy")
+    public UserDto createDummyUser(@Valid @RequestBody UserRegistrationDto userRegistration) {
+        UserDto userDto = new UserDto();
+        userDto.setUsername(userRegistration.getUsername() + "-append");
+        return userDto;
+    }
 }
