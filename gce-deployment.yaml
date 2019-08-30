@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth
+spec:
+  selector:
+    matchLabels:
+      app: auth
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: auth
+    spec:
+      containers:
+        - name: auth-service
+          image: gcr.io/sparkarabic-251004/auth-service:latest
+          imagePullPolicy: Always
+          envFrom:
+#          - configMapRef:
+#              name: clone-props
+          volumeMounts:
+            - name: xconfig
+              mountPath: /app/config
+          ports:
+            - containerPort: 8011
+      initContainers:
+        - name: git-clone
+          image: alpine/git:1.0.4
+          command: ['/bin/sh', '-c']
+          args: ['git clone --branch master https://github.com/makcalif/config-properties.git && mv config-properties/auth-service/dev/* /app/config'] # 3
+          volumeMounts:
+            - name: xconfig
+              mountPath: /app/xconfig
+#          envFrom:
+#            - configMapRef:
+#                name: clone-props
+      volumes:
+        - name: xconfig
+          emptyDir: {}
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: auth-service
+spec:
+  ports:
+    - protocol: TCP
+      port: 8011
+      targetPort: 8011  # from config map
+  type: ClusterIP
+  selector:
+    app: auth
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-service-front
+spec:
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 8011
+      targetPort: 8011   # from config map
+  selector:
+    app: auth

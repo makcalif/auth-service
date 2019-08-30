@@ -2,5 +2,5 @@
   
   docker build -t gcr.io/sparkarabic-251004/auth-service:latest .
   docker push gcr.io/sparkarabic-251004/auth-service:latest
-  k delete -f gce-deployment.yaml 
-  k apply -f gce-deployment.yaml 
+  kubectl delete -f gce-deployment.yaml 
+  kubectl apply -f gce-deployment.yaml 

@@ -1,0 +1,155 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    kubernetes.io/limit-ranger: 'LimitRanger plugin set: cpu request for container
+      my-release-mongodb'
+  creationTimestamp: 2019-08-27T00:07:23Z
+  generateName: my-release-mongodb-6bf79fc667-
+  labels:
+    app: mongodb
+    chart: mongodb-7.2.2
+    pod-template-hash: 6bf79fc667
+    release: my-release
+  name: my-release-mongodb-6bf79fc667-mgjqx
+  namespace: default
+  ownerReferences:
+  - apiVersion: apps/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: ReplicaSet
+    name: my-release-mongodb-6bf79fc667
+    uid: a51fe364-c85e-11e9-b8a6-42010a8000ef
+  resourceVersion: "192284"
+  selfLink: /api/v1/namespaces/default/pods/my-release-mongodb-6bf79fc667-mgjqx
+  uid: a527c4f2-c85e-11e9-b8a6-42010a8000ef
+spec:
+  containers:
+  - env:
+    - name: MONGODB_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          key: mongodb-password
+          name: my-release-mongodb
+    - name: MONGODB_ROOT_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          key: mongodb-root-password
+          name: my-release-mongodb
+    - name: MONGODB_USERNAME
+      value: oauth-user
+    - name: MONGODB_SYSTEM_LOG_VERBOSITY
+      value: "0"
+    - name: MONGODB_DISABLE_SYSTEM_LOG
+      value: "no"
+    - name: MONGODB_DATABASE
+      value: oauth-db
+    - name: MONGODB_ENABLE_IPV6
+      value: "no"
+    - name: MONGODB_ENABLE_DIRECTORY_PER_DB
+      value: "no"
+    image: docker.io/bitnami/mongodb:4.0.12-debian-9-r5
+    imagePullPolicy: IfNotPresent
+    livenessProbe:
+      exec:
+        command:
+        - mongo
+        - --eval
+        - db.adminCommand('ping')
+      failureThreshold: 6
+      initialDelaySeconds: 30
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 5
+    name: my-release-mongodb
+    ports:
+    - containerPort: 27017
+      name: mongodb
+      protocol: TCP
+    readinessProbe:
+      exec:
+        command:
+        - mongo
+        - --eval
+        - db.adminCommand('ping')
+      failureThreshold: 6
+      initialDelaySeconds: 5
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 5
+    resources:
+      requests:
+        cpu: 100m
+    securityContext:
+      procMount: Default
+      runAsNonRoot: true
+      runAsUser: 1001
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /bitnami/mongodb
+      name: data
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: default-token-ldqg5
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  nodeName: gke-sparkarabic-default-pool-6d0de155-6759
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext:
+    fsGroup: 1001
+  serviceAccount: default
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  volumes:
+  - name: data
+    persistentVolumeClaim:
+      claimName: my-release-mongodb
+  - name: default-token-ldqg5
+    secret:
+      defaultMode: 420
+      secretName: default-token-ldqg5
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: 2019-08-27T00:07:26Z
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: 2019-08-27T00:08:00Z
+    status: "True"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: 2019-08-27T00:08:00Z
+    status: "True"
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: 2019-08-27T00:07:26Z
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - containerID: docker://83b45e2df8dbcf7fd78e8d7d2c0ffe6a7d113066d3b01f4f303a7e1ae93a337c
+    image: bitnami/mongodb:4.0.12-debian-9-r5
+    imageID: docker-pullable://bitnami/mongodb@sha256:dd4bc7aac13f6fbb05a8b99a148b75235c9cabe0d1e175febc27b66e0f47f7c3
+    lastState: {}
+    name: my-release-mongodb
+    ready: true
+    restartCount: 0
+    state:
+      running:
+        startedAt: 2019-08-27T00:07:51Z
+  hostIP: 10.128.0.2
+  phase: Running
+  podIP: 10.4.0.17
+  qosClass: Burstable
+  startTime: 2019-08-27T00:07:26Z
