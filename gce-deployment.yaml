@@ -20,7 +20,7 @@ spec:
 #          - configMapRef:
 #              name: clone-props
           volumeMounts:
-            - name: xconfig
+            - name: config
               mountPath: /app/config
           ports:
             - containerPort: 8011
@@ -28,15 +28,15 @@ spec:
         - name: git-clone
           image: alpine/git:1.0.4
           command: ['/bin/sh', '-c']
-          args: ['git clone --branch master https://github.com/makcalif/config-properties.git && mv config-properties/auth-service/dev/* /app/config'] # 3
+          args: ['git clone --branch gcp-deployment https://github.com/makcalif/config-properties.git && mv config-properties/auth-service/dev/* /app/config'] # 3
           volumeMounts:
-            - name: xconfig
-              mountPath: /app/xconfig
+            - name: config
+              mountPath: /app/config
 #          envFrom:
 #            - configMapRef:
 #                name: clone-props
       volumes:
-        - name: xconfig
+        - name: config
           emptyDir: {}
 ---
 kind: Service
