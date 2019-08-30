@@ -6,23 +6,11 @@ spring:
     name: auth-service
   data:
     mongodb:
-      #uri: mongodb://root:example@34.67.72.80:80/admin
-      #uri: mongodb://oauth-user:password@34.67.72.80:80/oauth-db?authSource=admin
-      #uri: mongodb://root:example@34.67.72.80:80/admin?authSource=admin # gives The port '0' is not a valid,
       host: 34.67.72.80
       port: 80
       database: oauth-db
-      #database: admin
-#      username: abc
-#      password: def
-#      authentication-database: oauth-db
       username: oauth-user
       password: password
-
-#      username: root
-#      password: example
-
-
 
 server:
   port: 8012
