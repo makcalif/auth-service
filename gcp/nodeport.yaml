@@ -1,0 +1,13 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: auth-service
+spec:
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8011  # from config map
+      name: http
+  type: NodePort
+  selector:
+    app: auth

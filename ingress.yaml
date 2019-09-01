@@ -1,0 +1,18 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: sparkarabic
+  annotations:
+    ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - http:
+      paths:
+        - path: /*
+          backend:
+            serviceName: auth-service
+            servicePort: 8011
+        - path: /account
+          backend:
+            serviceName: account-service
+            servicePort: 8022
