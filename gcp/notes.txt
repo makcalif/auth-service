@@ -1,0 +1,14 @@
+gcloud config set project sparkarabic-251004
+
+gcloud container clusters get-credentials sparkarabic --zone us-central1-a --project sparkarabic-251004
+
+
+restart cluster node
+ gcloud config set project sparkarabic-251004
+ gcloud container clusters  resize $CLUSTER_NAME --size=0 --region=us-central1-a
+ gcloud container clusters  resize $CLUSTER_NAME --size=1 --region=us-central1-a
+
+
+ kubectl run --generator=run-pod/v1 -i -tty  curl  --image=radial/busyboxplus:curl /bin/sh
+ kubectl run --generator=run-pod/v1 -it  curl  --image=radial/busyboxplus:curl /bin/sh
+ kubectl attach curl -c curl -i -t
