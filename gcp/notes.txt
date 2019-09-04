@@ -9,6 +9,49 @@ restart cluster node
  gcloud container clusters  resize $CLUSTER_NAME --size=1 --region=us-central1-a
 
 
- kubectl run --generator=run-pod/v1 -i -tty  curl  --image=radial/busyboxplus:curl /bin/sh
+ # (fails b/c of y in tty) kubectl run --generator=run-pod/v1 -i -tty  curl  --image=radial/busyboxplus:curl /bin/sh
  kubectl run --generator=run-pod/v1 -it  curl  --image=radial/busyboxplus:curl /bin/sh
  kubectl attach curl -c curl -i -t
+
+ -----------------------------
+ helm to yaml
+ helm template . --namespace nginx-ingress -f demo.yaml > nginx-ingress.yaml
+    where demo.yaml is the values override for helm chart
+
+  ----------------------------
+  port forward
+  k port-forward nginx-ingress <pod name> 8080:8080 -n <namespace>
+
+  ---------------------------------
+  static ip
+  gcloud compute  addresses create nginx-static-ip --global
+  gcloud compute  addresses list
+
+  -----------------------------------------
+  query pods by label
+  kubectl get pods --selector=app=kibana
+
+  -----------------------------------------
+  helm delete <release name> --purge
+  without purge it will not let you re-create with same release name
+  -----------------------------------------
+  alias namespace for k8
+  alias kcn
+  kcn='kubectl config set-context $(kubectl config current-context) --namespace'
+  then you can do :
+  kcn <some ns>
+  then do 'k get pods' it will show pods in ns
+  -------------------------------------------
+  watch events in kubectl describe:
+  k describe certificate <cert name> | grep 'Events:' -A 20
+  grep and show next 20 liness
+  add watch:
+  watch 'k describe certificate <cert name> | grep 'Events:' -A 20'
+  -------------------------------------
+  edit a pod on the fly
+  k edit pod < pod name>
+  ------------------------
+  pod cpu usage
+  k top pod
+  k top node
+
