@@ -1,0 +1,20 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: echo-https
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    certmanager.k8s.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  tls:
+  - hosts:
+    - netmusings.com
+    secretName: letsencrypt-prod
+  rules:
+  - host: netmusings.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: echo-service
+          servicePort: 80
