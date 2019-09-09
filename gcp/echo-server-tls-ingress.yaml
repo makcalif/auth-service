@@ -8,10 +8,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - netmusings.com
+    - first.netmusings.com
     secretName: letsencrypt-prod
   rules:
-  - host: netmusings.com
+  - host: first.netmusings.com
     http:
       paths:
       - path: /
