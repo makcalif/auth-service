@@ -1,0 +1,112 @@
+dns setup
+
+gcloud compute addresses create web-static-ip --global
+after create check it under: 'External IP addresses'
+OR : gcloud compute addresses describe web-static-ip --global
+
+then setup echo server with static ip
+check: echo-ingress-static-ip.yaml
+
+in gcp , created a dns zone (just a container)
+then removed the go-daddy dns server setup.. cleaned it up and instead added 
+gooogle's 4 dns entries while dropping the . in the end
+
+ns-cloud-b1.googledomains.com.
+ns-cloud-b2.googledomains.com.
+ns-cloud-b3.googledomains.com.
+ns-cloud-b4.googledomains.com.
+
+then created a CNAME for first.netmusing.com
+then created a CNAME for www.netmusing.com
+
+===========================================
+good references: 
+https://akomljen.com/get-automatic-https-with-lets-encrypt-and-kubernetes-ingress/
+https://iamchuka.com/automate-tls-ssl-certificate-issuance-renewal-part-v/
+
+The certificate, in addition to containing the public key, contains additional information such as issuer, 
+what the certificate is supposed to be used for, and other types of metadata. 
+Typically, a certificate is itself signed by a certificate authority (CA) using CA's private key.
+
+helm install --name cert-manager \
+    --namespace default \
+    --set ingressShim.defaultIssuerName=letsencrypt-prod \
+    --set ingressShim.defaultIssuerKind=ClusterIssuer \
+    stable/cert-manager \
+    --version v0.5.2
+
+kubectl get pod -n ingress --selector=app=cert-manager
+NAME                            READY   STATUS    RESTARTS   AGE
+cert-manager-6dc5c68468-4mlrp   1/1     Running   0          3d16h
+
+
+mumtaz_khan@cloudshell:~/dev/auth-service/gcp (sparkarabic-251004)$ k get crd
+NAME                                    CREATED AT
+
+certificates.certmanager.k8s.io         2019-09-03T04:15:54Z
+clusterissuers.certmanager.k8s.io       2019-09-03T04:15:56Z
+issuers.certmanager.k8s.io              2019-09-03T04:15:56Z
+
+ran: 
+k apply -f cluster-issuer.yaml
+
+test: k get clusterissuers
+
+k get secrets -n ingress
+NAME                       TYPE                                  DATA   AGE
+cert-manager-token-j2g9w   kubernetes.io/service-account-token   3      3d16h
+default-token-gglgc        kubernetes.io/service-account-token   3      3d16h
+letsencrypt-prod           Opaque                                1      3d16h
+
+the last one was probably created when above 'helm install cert-manager' was executed
+
+now run : echo-server-tls-ingress.yaml
+to create tls ingress
+
+k delete -f echo-ingress-static-ip.yaml
+
+then observed this: this ingress appeared: cm-acme-http-solver-m7f9b   
+
+mumtaz_khan@cloudshell:~/dev/auth-service/gcp (sparkarabic-251004)$ k get ing
+NAME                        HOSTS            ADDRESS   PORTS     AGE
+cm-acme-http-solver-m7f9b   netmusings.com             80        4m7s
+echo-https                  netmusings.com             80, 443   4m15s
+mumtaz_khan@cloudshell:~/dev/auth-service/gcp (sparkarabic-251004)$ k describe ing cm-acme-http-solver-m7f9b
+Name:             cm-acme-http-solver-m7f9b
+Namespace:        default
+Address:
+Default backend:  default-http-backend:80 (10.4.0.12:8080)
+Rules:
+  Host            Path  Backends
+  ----            ----  --------
+  netmusings.com
+                  /.well-known/acme-challenge/fGA0uQKPJTCXDhEyTpsUS67jk72fQG7lWr0Uy6b-nZY   cm-acme-http-solver-78zdr:8089 (<none>)
+Annotations:
+  kubernetes.io/ingress.class:  nginx
+Events:                         <none>
+
+
+--------------------
+for debuggin :
+curl -kivL https://netmusings.com
+https://docs.cert-manager.io/en/latest/tutorials/acme/quick-start/
+
+
+k describe clusterissuer letsencrypt-prod
+
+k get secret letsencrypt-prod -o yaml
+apiVersion: v1
+data:
+  tls.key: LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFcGdJQkFBS0NBUUVBNi9rUWhxMStwNEJoRFVCV0VVVnlKR3lSQlc0Mkcwa0s1cHdMLzNqMDU0TlJvUjFWCmNLemZtMkp0M3FFRnJ0WUNsYWlPR0pKNHRkMG1tcm9hOU1va0VJOGo0aGljMWFtUkoyOVFDS25xV0JrWENLSm4KSEhJOGFZT0w3WHR5cTdlTmtxaGNiRVBYdktudGt2dDR1aEZ0VVJ2bWgzTitsdWM0RDh0eGNUZ0lINU1CbVdPcQpYTEdLbE15eDlGY25SNHJNQlk4NzM1bGl4V0ZkREpxYTF0QUhwc3M1dldvVUhvS1dMVEpyaERIS29oTU83M0t0CjhJZ1FpT3RRM1RUTC85MVE4SEpCOHlmSW1oUFVrZVNZa1FJZlJuakxHVU5lYlM0OXpwWTJNNjl5YTFKVkw4WC8KTnlYR3lldForU0RmUXZ2NmRwRjFVNVNRWFFSSURnNjRtOVdhUlFJREFRQUJBb0lCQVFDeXY1eFJLS05FWnU4ZApocHFyd3B0UUZCMVdxOEc0c1gvY2FHQitTVFhiR1pLQUpTUlBrZVJnWkJNdURYT3NtTmlrWFdZbUh1M3BkWGlFCnhHMGUrUENReXAwMzY4VUI1TXpidm1vMTVlQnFrN2JyQjNwc0JlelZVSnh5Ykl6VW50cFRPYzJwQlVzcTB0M3YKOVNYaWJNa09JOEJnNHBBRjUyaUVMbXZrZzdsRGtEZXRKWGszRDdWSUhaQXpiYjRVU3Nwb2VZSStsV2JYOUNqNwpSRTQxWXNzMzEyM0RnUWpBbWgxS2QwQnM5ZUZpVHBGcm43L1hWRGNLNlFRSE0vV2tMVCtmcG1ZdGoxLy9pQ1FECmFpSndIZngrQ2N1Y1lucWJwMHVlcERaSUwya3FJQlpiRTRlck9wUVRDU3VyVzVEZktkTVBZbmZwNWpObWNMSEkKV0h3bGV2Y1JBb0dCQU8rSzJycTA0YzVlVFkwVU9MWGVoUUFRZFNydVQvSzRmSXB0bTJ1bXVGMmtPbEZ5cFhsaApnZE92YVowendvVHpHYXowWXllblA2UnVMVnZUOVppaHB3MjU4NVkzRzdDWnFpdlg5U3k4czB2dmszTlZuQlZ5CkpoemRDUVlLb2NYaFI0UTVJOWhzWS80c1Qyd0pJdVczeENLeWs2MWdWMXFtcWNBRzFURjJGZWhiQW9HQkFQd3YKYmNkdUxOMGRGeDhESjJodFZFU2JsT2ZmdkRnRlZEUDJVd1poRTNsR21iVHZ5Z0hpZ2ltMGhubkRlcnFJb1FvTwp4aDNHVXBtSGdkWFk0SCtWWlFFSmlkZFhCNHc5V0FFOURKUDZiSlpEWHYzWExTTlRXSjVUQTZvQVRuOUw3YVc3CjI1Vkw2U24zVkZ4a1A4Q3VudHpRSEs4SDhBUnp1bmM3aXhySXp3bmZBb0dCQUtWZ21nNFkzMlNZbXJYeDVnMDUKNlZ6WC8reDV4MXh0bmgzNytqZGlUUnJwVFJINk11QVFQNCtrSlNoUkdkU3IrV2Y4K1kvZzJnRnR4NGNFV1NUZApSZlltRVZQK0MvSHF4UityNHlyVnhIdUNsYXdreUxQTnNSNXdROUNWK29ZaE9EekRMa28yMnZvYUlXTVhFNjdCCkpucEdDOHJCSHM0SkRsenkyckZoTTFMTkFvR0JBTEsrSHk0eVRnUXU0VHR1N2RpYlhSWC92Q3daTFh2N2N2SWQKamoxQVF5QTdSU2kwcU5acktGek5BbDk5aVJoN1RNRW5OWTdYQ2FhZUlBMWxXY0cwTHRIc1k5SEljcVlZdUs2dwpDYUU4NXdnZUdrOEsyNGhsUTdOOEhXVzZMK2tUOVEzNk42bjdFdmxXdjJsNCtLTG1ZZDBhZUtvcWt4bGt1VzVYCk9zSXlRR1M3QW9HQkFJd2JGT3NBclczajBBL0JLY3NmWlNzREswVmsrSnUyY1QzSTk0UGhRdWZnSk1vNVhnUzAKOEVuRmliQ1FKNE5oSnh4emRhUHAvaEZMQ3lRS2hacXFhNHpSdCtQbjVad3lsVTJMWGc2WFhiaEJNTitTQzBGawpBNzdXdEFMMlhzZktRN2V3b3Nncm5mYldxOWtYaVpLWnBNZ2NBNnBpaFRFSTZETmJXWGF3elluSAotLS0tLUVORCBSU0EgUFJJVkFURSBLRVktLS0tLQo=
+kind: Secret
+metadata:
+  creationTimestamp: 2019-09-09T02:32:52Z
+  name: letsencrypt-prod
+  namespace: default
+  resourceVersion: "3305991"
+  selfLink: /api/v1/namespaces/default/secrets/letsencrypt-prod
+  uid: 1f286c95-d2aa-11e9-b8d7-42010a800107
+type: Opaque
+
+
+k describe cert letsencrypt-prod

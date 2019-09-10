@@ -5,7 +5,7 @@ metadata:
 spec:
   limits:
   - default:
-      cpu: 1
+      cpu: 50m
     defaultRequest:
-      cpu: 0.2
+      cpu: 10m 
     type: Container
