@@ -1,0 +1,448 @@
+{
+	"info": {
+		"_postman_id": "a93bf98c-f5cd-4f29-8c61-1d986fe4c03f",
+		"name": "sparkarabic oauth",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "http://localhost:8781/uaa/oauth/token ",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "1234",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "browser",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "randomuser",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "1234",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8781/uaa/oauth/token",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8781",
+					"path": [
+						"uaa",
+						"oauth",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8082/accounts",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "browser",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "1234",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\": \"mumtaz\",\n\t\"password\": \"khan\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8082/accounts",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"accounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8781/uaa/user/current",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "67a8917c-8f8b-469b-aec3-6bf012440a4f",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8781/uaa/user/current",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8781",
+					"path": [
+						"uaa",
+						"user",
+						"current"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost/persons",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"60258434-aac7-11e9-a2a3-2a2ae2dbcce4\",\r\n    \"firstName\": \"first\",\r\n    \"lastName\": \"saved\"\r\n}\r\n"
+				},
+				"url": {
+					"raw": "localhost/persons",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"persons"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8012/oauth/token",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "browser",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "1234",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "randomuser",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "1234",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8012/oauth/token",
+					"host": [
+						"localhost"
+					],
+					"port": "8012",
+					"path": [
+						"oauth",
+						"token"
+					]
+				},
+				"description": "Get oauth token from auth-service\t"
+			},
+			"response": []
+		},
+		{
+			"name": "oauth token for create user",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "account-service",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "1234",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "randomuser",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "1234",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8011/uaa/oauth/token",
+					"host": [
+						"localhost"
+					],
+					"port": "8011",
+					"path": [
+						"uaa",
+						"oauth",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8011/uaa/user/current",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "0bab70ce-8671-4579-8491-4bb55bf8278c",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\": \"sheraz\",\n\t\"password\": \"khan\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8011/uaa/user/current",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8011",
+					"path": [
+						"uaa",
+						"user",
+						"current"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get oauth as mumtaz browser",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "browser",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "1234",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "mumtaz",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "khan",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8011/uaa/oauth/token",
+					"host": [
+						"localhost"
+					],
+					"port": "8011",
+					"path": [
+						"uaa",
+						"oauth",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create user mumtaz",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "d6c9d5cf-6790-4195-98c2-42838325c0b8",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\": \"mumtaz\",\n\t\"password\": \"khan\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8011/uaa/user",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8011",
+					"path": [
+						"uaa",
+						"user"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
